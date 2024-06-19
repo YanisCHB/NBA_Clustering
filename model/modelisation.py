@@ -70,17 +70,42 @@ def manual_prediction_input(column_names, labels):
     st.header("Manual Input for Prediction")
 
     input_data = {}
-    for col in column_names:
-        label = labels.get(col, col)
-        input_data[col] = st.number_input(f"Enter value for {label}", min_value=float(X[col].min()), max_value=float(X[col].max()))
+    computed_data = {}
 
+    for col in column_names:
+        if col not in ['FG%', '3P%', '2P%', 'eFG%', 'FT%']:  # Skip computed fields
+            label = labels.get(col, col)
+            input_data[col] = st.number_input(f"Enter value for {label}", min_value=float(X[col].min()), max_value=float(X[col].max()))
+
+    # Compute the percentage fields
+    if 'FG' in input_data and 'FGA' in input_data and input_data['FGA'] != 0:
+        computed_data['FG%'] = input_data['FG'] / input_data['FGA']
+    if '3P' in input_data and '3PA' in input_data and input_data['3PA'] != 0:
+        computed_data['3P%'] = input_data['3P'] / input_data['3PA']
+    if '2P' in input_data and '2PA' in input_data and input_data['2PA'] != 0:
+        computed_data['2P%'] = input_data['2P'] / input_data['2PA']
+    if 'FG' in input_data and 'FGA' in input_data and input_data['FGA'] != 0:
+        computed_data['eFG%'] = (input_data['FG'] + 0.5 * input_data['3P']) / input_data['FGA'] if '3P' in input_data else input_data['FG'] / input_data['FGA']
+    if 'FT' in input_data and 'FTA' in input_data and input_data['FTA'] != 0:
+        computed_data['FT%'] = input_data['FT'] / input_data['FTA']
+
+    for col, value in computed_data.items():
+        st.write(f"{labels.get(col, col)}: {value:.2f}")
+
+    input_data.update(computed_data)
     input_df = pd.DataFrame([input_data])
+    
+    # Ensure all necessary columns are present and in the correct order
+    for col in column_names:
+        if col not in input_df.columns:
+            input_df[col] = 0.0
+    input_df = input_df[column_names]
+    
     prediction = svm(input_df, model)
     st.write(f"Predicted Position: {prediction[0]}")
 
 def main():
     st.title("NBA Player Position Prediction")
-    st.write("This section allows you to train an SVM model and make predictions on NBA player positions.")
 
     # Display performance graphs
     y_pred = model.predict(X_test)

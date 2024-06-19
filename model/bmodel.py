@@ -28,7 +28,7 @@ def svm(donnees, model):
 def train_svm_model(X, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-    # Create and train the SVM model
+    # Create and train the SVC model
     model = SVC(kernel='linear', probability=True)
     model.fit(X_train, y_train)
 
