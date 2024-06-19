@@ -6,7 +6,7 @@ __pycache__/
 *.pyc
 
 # Ignorer les fichiers CSV dans le dossier raw
-data/processed/*.csv
+# data/processed/*.csv
 
 # Ignorer d'autres fichiers temporaires ou inutiles
 *.log
