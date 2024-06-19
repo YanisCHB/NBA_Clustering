@@ -1,0 +1,18 @@
+# Ignorer l'environnement virtuel
+nba/
+
+# Ignorer les fichiers de cache Python
+__pycache__/
+*.pyc
+
+# Ignorer les fichiers CSV dans le dossier raw
+data/processed/*.csv
+
+# Ignorer d'autres fichiers temporaires ou inutiles
+*.log
+*.tmp
+
+# Ignorer les fichiers et dossiers spécifiques
+.DS_Store
+.idea/
+.vscode/
